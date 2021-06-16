@@ -15,6 +15,14 @@
 			<input type="submit" class="btn btn-primary" value="Go">
 		</form>
 	</div>
+	
+	<div class="jumbotron">
+		<p>Which state's legislator are you looking for?</p>
+			<form action="legislatorsearch">
+			State: <input type="text" name="legislator" required>
+			<input type="submit" class="btn btn-primary" value="Go">
+		</form>
+	</div>
 
 </body>
 </html>
