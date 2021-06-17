@@ -22,6 +22,8 @@ import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+
 public class PrideMakerRestTemplate extends RestTemplate{
 	
 	public PrideMakerRestTemplate(){
@@ -31,7 +33,8 @@ public class PrideMakerRestTemplate extends RestTemplate{
 
 		// Note: here we are making this converter to process any kind of response, 
 		// not only application/*json, which is the default behaviour
-		converter.setSupportedMediaTypes(Collections.singletonList(MediaType.TEXT_HTML));        
+		converter.setSupportedMediaTypes(Collections.singletonList(MediaType.TEXT_HTML));  
+		converter.getObjectMapper().enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
 		messageConverters.add(converter);  
 		this.setMessageConverters(messageConverters);
 	}
@@ -45,7 +48,6 @@ public class PrideMakerRestTemplate extends RestTemplate{
 
 		RequestCallback requestCallback = httpEntityCallback(requestEntity, responseType);
 		ResponseExtractor<ResponseEntity<T>> responseExtractor = responseEntityExtractor(responseType);
-		System.out.println(responseType);
 		return (execute(url, method, requestCallback, responseExtractor, uriVariables));
 	}
 	
@@ -63,7 +65,6 @@ public class PrideMakerRestTemplate extends RestTemplate{
 			}
 			response = request.execute();
 			handleResponse(url, method, response);
-			System.out.println(responseExtractor.equals(null));
 			return (responseExtractor != null ? responseExtractor.extractData(response) : null);
 		}
 		catch (IOException ex) {

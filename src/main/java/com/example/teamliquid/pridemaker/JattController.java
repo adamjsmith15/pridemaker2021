@@ -20,7 +20,6 @@ import com.example.teamliquid.pridemaker.entity.orgsummary.OrgSummaryRoot;
 @Controller
 public class JattController {
 	PrideMakerRestTemplate restTemplate = new PrideMakerRestTemplate();
-	
 	@Value("${secret.key}")
 	String apiKey;
 
@@ -47,7 +46,6 @@ public class JattController {
 		headersCompany.add("Accept", MediaType.APPLICATION_JSON_VALUE);
 		HttpEntity<String> companyEntity = new HttpEntity<>("parameters", headersCompany);
 		ResponseEntity<OrganizationRoot> companyResponse = restTemplate.exchange(finalUrl, HttpMethod.GET, companyEntity, OrganizationRoot.class);
-		//System.out.println(companyResponse.getBody().getOrganizationResponse().getOrganization().size());
 		
 		mv.addObject("root", companyResponse.getBody().getOrganizationResponse().getOrganization());
 
@@ -83,7 +81,6 @@ public class JattController {
 		ModelAndView mv = new ModelAndView("orgsummary");
 		
 		String url ="https://www.opensecrets.org/api/?method=orgSummary&id=" + id + "&apikey=" + apiKey + "&output=json";
-		System.out.println(url);
 		
 		// get header and info for company
 		HttpHeaders headersCompany = new HttpHeaders();
@@ -111,6 +108,12 @@ public class JattController {
 		mv.addObject("legdet", legDetResponse.getBody().getResponse().getSummary().getAttributes());
 		mv.addObject("contrib", topContribResponse.getBody().getResponse().getContributors().getContributor());
 		return mv;
+	}
+	
+	@RequestMapping("/donationpage")
+	public ModelAndView donationpage() {
+		
+		return new ModelAndView("donationpage");
 	}
 
 }

@@ -19,7 +19,6 @@ public class OrganizationResponse {
 
 	public OrganizationResponse() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	

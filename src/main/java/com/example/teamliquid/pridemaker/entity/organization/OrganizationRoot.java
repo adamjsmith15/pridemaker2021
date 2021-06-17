@@ -7,7 +7,6 @@ public class OrganizationRoot {
 
 	public OrganizationRoot() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public OrganizationResponse getOrganizationResponse() {
