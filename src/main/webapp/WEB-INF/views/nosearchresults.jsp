@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="styles.css">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 <meta charset="ISO-8859-1">
-<title>Company Results</title>
+<title>No Search Results</title>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 	<div class="container-fluid">
 		<a class="navbar-brand" href="/"><span class="multicolortext"><strong>PrideMakers 2021</strong></span></a>
@@ -47,27 +47,11 @@
 		</div>
 	</div>
 </nav>
-</head>
 <body>
-<h1>Organization Results</h1>
-<p>
-		Select a company that you would like to see more details on</p>
-<div class="container">
-		<table class="table" border=3>
-			<thead>
-				<tr>
-					<th scope="col">Organization Name</th>
-				</tr>
-			</thead>
-			<tbody>
-				<c:forEach items="${ root }" var="o" varStatus="loop">
-					<tr>
-						<th scope="row"><a href="searchorgsummary?id=${ root[loop.index].attributes.orgid }">${ root[loop.index].attributes.orgname }</a> </th>
-					</tr>
-				</c:forEach>
-			</tbody>
+<h1>No Results for ${ search }</h1>
+	<p>
+		<span class="multicolortext"><a href="/">Try Again</a></span> 
+	</p>
 
-		</table>
-		</div>
 </body>
 </html>

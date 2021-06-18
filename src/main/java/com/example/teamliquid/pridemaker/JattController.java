@@ -23,96 +23,113 @@ public class JattController {
 	@Value("${secret.key}")
 	String apiKey;
 
-	
 	@RequestMapping("/")
 	public ModelAndView index() {
-		
+
 		return new ModelAndView("index");
 	}
-	
 
 	@RequestMapping("/companyresults")
 	public ModelAndView getCompanyResults(@RequestParam("org") String org) {
+
 		ModelAndView mv = new ModelAndView("companyresults");
-		
+
 		String url = "https://www.opensecrets.org/api/?method=getOrgs";
 		String input = org;
-		
+
 		String finalUrl = url + "&org=" + input + "&apikey=" + apiKey + "&output=json";
-		
 
-		// get header and info for company
-		HttpHeaders headersCompany = new HttpHeaders();
-		headersCompany.add("Accept", MediaType.APPLICATION_JSON_VALUE);
-		HttpEntity<String> companyEntity = new HttpEntity<>("parameters", headersCompany);
-		ResponseEntity<OrganizationRoot> companyResponse = restTemplate.exchange(finalUrl, HttpMethod.GET, companyEntity, OrganizationRoot.class);
-		
-		mv.addObject("root", companyResponse.getBody().getOrganizationResponse().getOrganization());
+		try {
 
+			// get header and info for company
+			HttpHeaders headersCompany = new HttpHeaders();
+			headersCompany.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+			HttpEntity<String> companyEntity = new HttpEntity<>("parameters", headersCompany);
+			ResponseEntity<OrganizationRoot> companyResponse = restTemplate.exchange(finalUrl, HttpMethod.GET,
+					companyEntity, OrganizationRoot.class);
 
-		
+			mv.addObject("root", companyResponse.getBody().getOrganizationResponse().getOrganization());
+		} catch (Exception e) {
+			mv = new ModelAndView("nosearchresults");
+			mv.addObject("search", org);
+		}
+
 		return mv;
-		
+
 	}
-	
+
 	@RequestMapping("/legislatorsearch")
-	public ModelAndView getLeislatorSearch(@RequestParam("legislator") String legislator) {
+	public ModelAndView getLeislatorSearch(@RequestParam("state") String state) {
 		ModelAndView mv = new ModelAndView("legislatorsearch");
-		
-		String url = "https://www.opensecrets.org/api/?method=getLegislators";
-		
-		String finalUrl = url + "&id=" + legislator + "&apikey=" + apiKey + "&output=json";
-		
 
-		// get header and info for company
-		HttpHeaders headersCompany = new HttpHeaders();
-		headersCompany.add("Accept", MediaType.APPLICATION_JSON_VALUE);
-		HttpEntity<String> legislatorEntity = new HttpEntity<>("parameters", headersCompany);
-		ResponseEntity<LegislatorRoot> legislatorResponse = restTemplate.exchange(finalUrl, HttpMethod.GET, legislatorEntity, LegislatorRoot.class);
+		String url = "https://www.opensecrets.org/api/?method=getLegislators";
+
+		String finalUrl = url + "&id=" + state + "&apikey=" + apiKey + "&output=json";
 		
-		mv.addObject("legislator", legislatorResponse.getBody().getResponse().getLegislator());
-	
+		try {
+
+			// get header and info for company
+			HttpHeaders headersCompany = new HttpHeaders();
+			headersCompany.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+			HttpEntity<String> legislatorEntity = new HttpEntity<>("parameters", headersCompany);
+			ResponseEntity<LegislatorRoot> legislatorResponse = restTemplate.exchange(finalUrl, HttpMethod.GET,
+					legislatorEntity, LegislatorRoot.class);
+
+			mv.addObject("legislator", legislatorResponse.getBody().getResponse().getLegislator());
+		} catch (Exception e) {
+			//should never get here but just in case would rather get a screen here 
+			
+			mv = new ModelAndView("nosearchresults");
+			mv.addObject("search", state);
+		}
+
 		return mv;
-		
+
 	}
-	
+
 	@RequestMapping("/searchorgsummary")
 	public ModelAndView searchOrgSummary(@RequestParam("id") String id) {
 		ModelAndView mv = new ModelAndView("orgsummary");
-		
-		String url ="https://www.opensecrets.org/api/?method=orgSummary&id=" + id + "&apikey=" + apiKey + "&output=json";
-		
+
+		String url = "https://www.opensecrets.org/api/?method=orgSummary&id=" + id + "&apikey=" + apiKey
+				+ "&output=json";
+
 		// get header and info for company
 		HttpHeaders headersCompany = new HttpHeaders();
 		headersCompany.add("Accept", MediaType.APPLICATION_JSON_VALUE);
 		HttpEntity<String> orgEntity = new HttpEntity<>("parameters", headersCompany);
-		ResponseEntity<OrgSummaryRoot> orgResponse = restTemplate.exchange(url, HttpMethod.GET, orgEntity, OrgSummaryRoot.class);
-		mv.addObject("summary",orgResponse.getBody().getResponse().getOrganization().getAttributes());
+		ResponseEntity<OrgSummaryRoot> orgResponse = restTemplate.exchange(url, HttpMethod.GET, orgEntity,
+				OrgSummaryRoot.class);
+		mv.addObject("summary", orgResponse.getBody().getResponse().getOrganization().getAttributes());
 		return mv;
 	}
-	
+
 	@RequestMapping("/getlegislatordetails")
 	public ModelAndView getLegislatorDetails(@RequestParam("id") String id) {
 		ModelAndView mv = new ModelAndView("legislatordetails");
-		
-		String summaryUrl ="https://www.opensecrets.org/api/?method=candSummary&cid=" + id + "&cycle=2020&apikey=" + apiKey + "&output=json";
-		String topContribUrl ="https://www.opensecrets.org/api/?method=candContrib&cid=" + id + "&cycle=2020&apikey=" + apiKey + "&output=json";
-		
+
+		String summaryUrl = "https://www.opensecrets.org/api/?method=candSummary&cid=" + id + "&cycle=2020&apikey="
+				+ apiKey + "&output=json";
+		String topContribUrl = "https://www.opensecrets.org/api/?method=candContrib&cid=" + id + "&cycle=2020&apikey="
+				+ apiKey + "&output=json";
+
 		// get header and info for company
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
 		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-		ResponseEntity<LegislatorDetailsRoot> legDetResponse = restTemplate.exchange(summaryUrl, HttpMethod.GET, entity, LegislatorDetailsRoot.class);
-		ResponseEntity<LegislatorTopContributorRoot> topContribResponse = restTemplate.exchange(topContribUrl, HttpMethod.GET, entity, LegislatorTopContributorRoot.class);
-		
+		ResponseEntity<LegislatorDetailsRoot> legDetResponse = restTemplate.exchange(summaryUrl, HttpMethod.GET, entity,
+				LegislatorDetailsRoot.class);
+		ResponseEntity<LegislatorTopContributorRoot> topContribResponse = restTemplate.exchange(topContribUrl,
+				HttpMethod.GET, entity, LegislatorTopContributorRoot.class);
+
 		mv.addObject("legdet", legDetResponse.getBody().getResponse().getSummary().getAttributes());
 		mv.addObject("contrib", topContribResponse.getBody().getResponse().getContributors().getContributor());
 		return mv;
 	}
-	
+
 	@RequestMapping("/donationpage")
 	public ModelAndView donationpage() {
-		
+
 		return new ModelAndView("donationpage");
 	}
 
